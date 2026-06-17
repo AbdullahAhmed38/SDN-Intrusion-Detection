@@ -1,0 +1,44 @@
+import json
+import requests
+import time
+
+LOG_FILE = "/var/log/suricata/eve.json"
+RYU_URL = "http://localhost:8080/stats/flowentry/add"
+
+def block_attacker(ip):
+    print(f"[!] Target identified: {ip}. Sending block command to Ryu...")
+    
+    payload = {
+        "dpid": 1,
+        "table_id": 0,
+        "priority": 65535,
+        "match": {
+            "nw_src": ip,
+            "eth_type": 2048
+        },
+        "actions": []
+    }
+    
+    try:
+        response = requests.post(RYU_URL, json=payload)
+        if response.status_code == 200:
+            print(f"[*] Success: IP {ip} has been blocked at the Switch level.")
+    except Exception as e:
+        print(f"[-] Error connecting to Ryu: {e}")
+
+print("[*] Monitoring Suricata for attacks...")
+
+with open(LOG_FILE, 'r') as f:
+    f.seek(0, 2)
+    while True:
+        line = f.readline()
+        if not line:
+            time.sleep(0.1)
+            continue
+        try:
+            data = json.loads(line)
+            if data.get("event_type") == "alert":
+                attacker_ip = data["src_ip"]
+                block_attacker(attacker_ip)
+        except:
+            continue
