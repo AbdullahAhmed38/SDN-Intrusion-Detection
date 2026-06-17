@@ -1,0 +1,43 @@
+Ubuntu code:
+source ~/ryu38/bin/activate ( active environment for python 3)
+----------------------------------------------------------------------------------------------------------------------------------
+ryu-manager ryu.app.simple_switch_13 ryu.app.ofctl_rest ( open Ryu controller)
+-----------------------------------------------------------------
+sudo mn --custom /home/abdullah/mytopo.py --topo mytopo --controller remote,ip=127.0.0.1,port=6633 --switch ovsk --mac --nat ( open  Mininet)
+-----------------------------------------------------------------
+sudo python3 /home/abdullah/SDN_Project/ips_agent.py ( run Ryu script)
+-----------------------------------------------------------------
+sudo ovs-ofctl -O OpenFlow13 dump-flows s1 ( display  Flow table )
+-----------------------------------------------------------------
+tail -f /var/log/suricata/fast.log ( open suricata fast log file)
+-----------------------------------------------------------------
+tail -f /var/log/suricata/eve.json | jq ( open suricata eve.json file)
+-----------------------------------------------------------------
+h2 iperf -s -p 5001 & (==>open it in mininet terminal, open h2 as a server , s==> h2 as a server , p ==> port number , & ==> make server run in background)
+-----------------------------------------------------------------
+(==>open it in mininet terminal , make h1 send packet , c 10.0.0.2 ==> make h2 as a clint ip 10.0.0.2 , p==> port number , t== time for test in seconds)
+-----------------------------------------------------------------
+h1 iperf -c 10.0.0.2 -p 5001 -t 30 (open it in mininet terminal,then open jperf , make server10.0.0.2)
+-----------------------------------------------------------------
+kali code:
+-----------------------------------------------------------------
+sudo hping3 -S -a 10.0.0.2 -p 80 -s 80 -c 100 10.0.0.2 ( TCP SYN Spoofing Loopback attack)
+-----------------------------------------------------------------
+sudo nmap -sS -Pn 10.0.0.2      (TCP SYN Scan using Nmap attack)
+-----------------------------------------------------------------
+sudo hping3 -S -p 80 --flood 10.0.0.2 (TCP SYN Flood Simulation attack)
+-----------------------------------------------------------------
+sudo ping -f 10.0.0.1 (ICMP Flood Simulation attack)
+-----------------------------------------------------------------
+sudo nmap -sV 10.0.0.1 (Service Version Detection attack)
+-----------------------------------------------------------------
+sudo nmap --script vuln 10.0.0.1 (Vulnerability Scanning attack)
+-----------------------------------------------------------------
+
+
+
+
+
+
+
+
